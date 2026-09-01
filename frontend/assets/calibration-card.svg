@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  NeoLume — Fixed Calibration Card (v1)
+  ======================================
+  Print this at 100% scale (disable "fit to page" / "shrink to fit" in your
+  print dialog) on plain matte paper, then trim along the outer border.
+
+  Physical size: 85.6mm x 54mm — standard ID-1 / credit-card size, so it's
+  easy to hold flush against a newborn's skin in one shot and easy to
+  sanity-check your printer didn't rescale the page (see the 50mm ruler).
+
+  Why this file exists: feature_extraction.py's calibrate_white_balance()
+  white-balances every photo against a hard-coded reference colour:
+
+      reference_rgb=(200, 200, 200)   # feature_extraction.py, default arg
+
+  ...but the app only ever told users to place "a printed calibration
+  card" in frame — no such card was ever shipped, and a card printed with
+  the wrong grey value would silently miscalibrate every scan. The large
+  patch below is printed at EXACTLY rgb(200,200,200) so it matches that
+  reference. Do not recolour it, and avoid printers/settings with heavy
+  auto colour-correction (turn off "vivid"/"photo enhance" print modes).
+-->
+<svg width="85.6mm" height="54mm" viewBox="0 0 856 540"
+     xmlns="http://www.w3.org/2000/svg">
+
+  <!-- card background / cut line -->
+  <rect x="0" y="0" width="856" height="540" rx="24" fill="#FFFFFF" stroke="#B9C4C1" stroke-width="2"/>
+
+  <!-- header -->
+  <text x="32" y="48" font-family="Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#0B3B3C">NeoLume</text>
+  <text x="32" y="70" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#5B6E6E">Fixed Calibration Card &#183; v1</text>
+
+  <!-- primary neutral-grey reference patch: MUST stay rgb(200,200,200) -->
+  <g>
+    <rect x="32" y="92" width="380" height="300" fill="rgb(200,200,200)" stroke="#0B3B3C" stroke-width="3"/>
+
+    <!-- corner registration brackets, matching the app's dashed capture-guide box -->
+    <path d="M32,92 L32,122 M32,92 L62,92" stroke="#C98A2C" stroke-width="6" fill="none"/>
+    <path d="M412,92 L412,122 M412,92 L382,92" stroke="#C98A2C" stroke-width="6" fill="none"/>
+    <path d="M32,392 L32,362 M32,392 L62,392" stroke="#C98A2C" stroke-width="6" fill="none"/>
+    <path d="M412,392 L412,362 M412,392 L382,392" stroke="#C98A2C" stroke-width="6" fill="none"/>
+
+    <!-- drawn as a vector star (not a text glyph) so it always prints/renders,
+         regardless of font availability -->
+    <polygon points="222,208 233,240 267,240 239,260 250,292 222,272 194,292 205,260 177,240 211,240"
+             fill="#0B3B3C"/>
+    <text x="222" y="356" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#0B3B3C">NEUTRAL REF &#183; RGB(200,200,200)</text>
+  </g>
+
+  <!-- secondary reference chips: not read by the current backend, printed
+       for future extension (full colour-checker matching) without needing
+       a new card revision -->
+  <g font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#5B6E6E">
+    <rect x="428" y="92" width="60" height="60" fill="rgb(255,255,255)" stroke="#D8E3DF" stroke-width="2"/>
+    <text x="458" y="168" text-anchor="middle">White</text>
+
+    <rect x="500" y="92" width="60" height="60" fill="rgb(20,20,20)" stroke="#D8E3DF" stroke-width="2"/>
+    <text x="530" y="168" text-anchor="middle">Black</text>
+
+    <rect x="428" y="188" width="60" height="60" fill="rgb(150,150,150)"/>
+    <text x="458" y="264" text-anchor="middle">Grey 60%</text>
+
+    <rect x="500" y="188" width="60" height="60" fill="rgb(235,180,60)"/>
+    <text x="530" y="264" text-anchor="middle">Yellow ref</text>
+  </g>
+
+  <!-- 50mm print-scale ruler: if this bar doesn't measure 50mm after
+       printing, your print dialog rescaled the page - reprint at 100% -->
+  <g>
+    <line x1="428" y1="300" x2="617" y2="300" stroke="#0B3B3C" stroke-width="3"/>
+    <line x1="428" y1="292" x2="428" y2="308" stroke="#0B3B3C" stroke-width="3"/>
+    <line x1="617" y1="292" x2="617" y2="308" stroke="#0B3B3C" stroke-width="3"/>
+    <text x="522" y="322" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#5B6E6E">50mm if printed at 100% scale</text>
+  </g>
+
+  <!-- usage instructions -->
+  <text x="32" y="425" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#152526">Hold flat, next to the baby's skin, same light.</text>
+  <text x="32" y="444" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#152526">In the app, crop the grey star patch above as the</text>
+  <text x="32" y="463" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#152526">"calibration card" region, then crop the skin region.</text>
+
+  <text x="32" y="500" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#5B6E6E">Screening aid only &#8212; not a diagnostic device.</text>
+  <text x="32" y="518" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#5B6E6E">Print flat, avoid glossy paper &amp; "photo enhance" print modes.</text>
+
+</svg>

@@ -1,0 +1,37 @@
+{
+  "n_samples": 1360,
+  "accuracy": 0.7713235294117647,
+  "precision": 0.8790697674418605,
+  "recall_sensitivity": 0.70875,
+  "auc": 0.8619263392857144,
+  "confusion_matrix": [
+    [
+      482,
+      78
+    ],
+    [
+      233,
+      567
+    ]
+  ],
+  "suggested_high_recall_threshold": 0.3,
+  "feature_names": [
+    "L_mean",
+    "L_std",
+    "L_median",
+    "A_mean",
+    "A_std",
+    "A_median",
+    "B_mean",
+    "B_std",
+    "B_median",
+    "H_mean",
+    "H_std",
+    "S_mean",
+    "S_std",
+    "V_mean",
+    "V_std",
+    "yellow_ratio",
+    "R_over_B_mean"
+  ]
+}
