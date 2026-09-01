@@ -16,8 +16,7 @@ NeoLume is available as a live web application with a separately deployed backen
 
 ### 🌐 Frontend
 
-**Live Application:**  
-[NeoLume](https://neo-lume.vercel.app/)
+**Live Application:**  [NeoLume](https://neo-lume.vercel.app/)
 
 Use the frontend to:
 - Access the camera
@@ -28,11 +27,9 @@ Use the frontend to:
 
 ### ⚙️ Backend API
 
-**Live API:**  
-[NeoLume Backend](https://neolume.onrender.com)
+**Live API:**  [NeoLume Backend](https://neolume.onrender.com)
 
-**API Health Check:**  
-[https://your-backend-url.com/health](https://neolume.onrender.com/health)
+**API Health Check:**  [API Health Check](https://neolume.onrender.com/health)
 
 The backend provides:
 - Image preprocessing
