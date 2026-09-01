@@ -1,386 +1,658 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NeoLume — Newborn Jaundice Screening</title>
-<style>
-  :root{
-    --teal-900:#0B3B3C;
-    --teal-700:#116466;
-    --teal-500:#1C8C82;
-    --mint-100:#EAF3EF;
-    --paper:#FAF8F4;
-    --ink:#152526;
-    --ink-soft:#5B6E6E;
-    --amber:#C98A2C;
-    --red:#B23A2E;
-    --green:#2F7D5C;
-    --line:#D8E3DF;
-    --radius:14px;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0; background:var(--paper); color:var(--ink);
-    min-height:100vh;
-  }
-  header{
-    display:flex; align-items:center; gap:12px;
-    padding:18px 20px; border-bottom:1px solid var(--line);
-    background:var(--teal-900); color:white;
-  }
-  header .mark{
-    width:34px; height:34px; border-radius:9px;
-    background:linear-gradient(135deg,var(--teal-500),var(--teal-700));
-    display:flex; align-items:center; justify-content:center;
-    font-weight:700; font-size:15px; letter-spacing:-0.5px;
-  }
-  header h1{ font-size:18px; margin:0; font-weight:650; letter-spacing:0.2px;}
-  header p{ margin:0; font-size:12px; color:#BFE0DB;}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NeoLume — Newborn Jaundice Screening</title>
+    <style>
+      :root {
+        --teal-900: #0b3b3c;
+        --teal-700: #116466;
+        --teal-500: #1c8c82;
+        --mint-100: #eaf3ef;
+        --paper: #faf8f4;
+        --ink: #152526;
+        --ink-soft: #5b6e6e;
+        --amber: #c98a2c;
+        --red: #b23a2e;
+        --green: #2f7d5c;
+        --line: #d8e3df;
+        --radius: 14px;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        min-height: 100vh;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--line);
+        background: var(--teal-900);
+        color: white;
+      }
+      header .mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: linear-gradient(135deg, var(--teal-500), var(--teal-700));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: -0.5px;
+      }
+      header h1 {
+        font-size: 18px;
+        margin: 0;
+        font-weight: 650;
+        letter-spacing: 0.2px;
+      }
+      header p {
+        margin: 0;
+        font-size: 12px;
+        color: #bfe0db;
+      }
 
-  main{ max-width:560px; margin:0 auto; padding:20px 16px 60px; }
+      main {
+        max-width: 560px;
+        margin: 0 auto;
+        padding: 20px 16px 60px;
+      }
 
-  .stepper{ display:flex; gap:6px; margin-bottom:18px; }
-  .stepper .dot{
-    flex:1; height:4px; border-radius:4px; background:var(--line);
-  }
-  .stepper .dot.active{ background:var(--teal-500); }
-  .stepper .dot.done{ background:var(--teal-700); }
+      .stepper {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 18px;
+      }
+      .stepper .dot {
+        flex: 1;
+        height: 4px;
+        border-radius: 4px;
+        background: var(--line);
+      }
+      .stepper .dot.active {
+        background: var(--teal-500);
+      }
+      .stepper .dot.done {
+        background: var(--teal-700);
+      }
 
-  .card{
-    background:white; border:1px solid var(--line); border-radius:var(--radius);
-    padding:18px; margin-bottom:16px;
-  }
-  .card h2{ font-size:16px; margin:0 0 6px; }
-  .card p.hint{ font-size:13px; color:var(--ink-soft); margin:0 0 14px; line-height:1.5;}
+      .card {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 18px;
+        margin-bottom: 16px;
+      }
+      .card h2 {
+        font-size: 16px;
+        margin: 0 0 6px;
+      }
+      .card p.hint {
+        font-size: 13px;
+        color: var(--ink-soft);
+        margin: 0 0 14px;
+        line-height: 1.5;
+      }
 
-  .video-wrap{
-    position:relative; width:100%; aspect-ratio:3/4; background:#0e1a1a;
-    border-radius:12px; overflow:hidden; margin-bottom:14px;
-  }
-  video, canvas.snapshot{ width:100%; height:100%; object-fit:cover; display:block; }
-  .guide{
-    position:absolute; inset:0; pointer-events:none;
-  }
-  .guide .card-box{
-    position:absolute; left:8%; top:6%; width:36%; height:22%;
-    border:2.5px dashed #FFD36E; border-radius:8px;
-  }
-  .guide .card-box::after{
-    content:"calibration card here"; position:absolute; top:-20px; left:0;
-    font-size:10.5px; color:#FFD36E; white-space:nowrap;
-  }
-  .guide .skin-box{
-    position:absolute; right:6%; bottom:8%; width:46%; height:46%;
-    border:2.5px dashed #7FE0C9; border-radius:50%;
-  }
-  .guide .skin-box::after{
-    content:"skin / forehead here"; position:absolute; bottom:-20px; left:0;
-    font-size:10.5px; color:#7FE0C9; white-space:nowrap;
-  }
+      .video-wrap {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 3/4;
+        background: #0e1a1a;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 14px;
+      }
+      video,
+      canvas.snapshot {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .guide {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+      .guide .card-box {
+        position: absolute;
+        left: 8%;
+        top: 6%;
+        width: 36%;
+        height: 22%;
+        border: 2.5px dashed #ffd36e;
+        border-radius: 8px;
+      }
+      .guide .card-box::after {
+        content: "calibration card here";
+        position: absolute;
+        top: -20px;
+        left: 0;
+        font-size: 10.5px;
+        color: #ffd36e;
+        white-space: nowrap;
+      }
+      .guide .skin-box {
+        position: absolute;
+        right: 6%;
+        bottom: 8%;
+        width: 46%;
+        height: 46%;
+        border: 2.5px dashed #7fe0c9;
+        border-radius: 50%;
+      }
+      .guide .skin-box::after {
+        content: "skin / forehead here";
+        position: absolute;
+        bottom: -20px;
+        left: 0;
+        font-size: 10.5px;
+        color: #7fe0c9;
+        white-space: nowrap;
+      }
 
-  .btn-row{ display:flex; gap:10px; }
-  button{
-    font:inherit; font-weight:600; font-size:14px; border:none;
-    border-radius:10px; padding:12px 16px; cursor:pointer;
-    transition:transform .08s ease, opacity .15s ease;
-  }
-  button:active{ transform:scale(0.98); }
-  button.primary{ background:var(--teal-700); color:white; flex:1; }
-  button.primary:disabled{ opacity:0.45; cursor:not-allowed; }
-  button.ghost{ background:var(--mint-100); color:var(--teal-900); }
-  button.link{ background:transparent; color:var(--teal-700); padding:8px 4px; text-decoration:underline; }
+      .btn-row {
+        display: flex;
+        gap: 10px;
+      }
+      button {
+        font: inherit;
+        font-weight: 600;
+        font-size: 14px;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 16px;
+        cursor: pointer;
+        transition:
+          transform 0.08s ease,
+          opacity 0.15s ease;
+      }
+      button:active {
+        transform: scale(0.98);
+      }
+      button.primary {
+        background: var(--teal-700);
+        color: white;
+        flex: 1;
+      }
+      button.primary:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      button.ghost {
+        background: var(--mint-100);
+        color: var(--teal-900);
+      }
+      button.link {
+        background: transparent;
+        color: var(--teal-700);
+        padding: 8px 4px;
+        text-decoration: underline;
+      }
 
-  .thumbs{ display:flex; gap:10px; margin-top:12px; }
-  .thumbs .thumb{
-    flex:1; border:1px solid var(--line); border-radius:10px; overflow:hidden;
-    aspect-ratio:1/1; position:relative; background:#f2f2f2;
-  }
-  .thumbs .thumb img{ width:100%; height:100%; object-fit:cover; }
-  .thumbs .thumb .label{
-    position:absolute; bottom:0; left:0; right:0; background:rgba(11,59,60,.85);
-    color:white; font-size:10.5px; padding:3px 6px;
-  }
+      .thumbs {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .thumbs .thumb {
+        flex: 1;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+        aspect-ratio: 1/1;
+        position: relative;
+        background: #f2f2f2;
+      }
+      .thumbs .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .thumbs .thumb .label {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(11, 59, 60, 0.85);
+        color: white;
+        font-size: 10.5px;
+        padding: 3px 6px;
+      }
 
-  .result{ text-align:center; padding:8px 0 4px; }
-  .badge{
-    display:inline-flex; align-items:center; gap:8px;
-    padding:10px 18px; border-radius:999px; font-weight:700; font-size:15px;
-    margin-bottom:14px;
-  }
-  .badge.LOW{ background:#E4F4EC; color:var(--green); }
-  .badge.MONITOR{ background:#FBF0DE; color:var(--amber); }
-  .badge.REFER_URGENTLY{ background:#FBE7E4; color:var(--red); }
-  .prob-bar{
-    height:8px; border-radius:6px; background:var(--line); overflow:hidden; margin:10px 0 4px;
-  }
-  .prob-bar .fill{ height:100%; background:var(--teal-500); }
-  .explain{ font-size:13px; color:var(--ink-soft); line-height:1.55; text-align:left;
-    background:var(--mint-100); border-radius:10px; padding:12px 14px; margin-top:12px;}
-  .meta{ font-size:11px; color:var(--ink-soft); margin-top:10px; }
+      .result {
+        text-align: center;
+        padding: 8px 0 4px;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 15px;
+        margin-bottom: 14px;
+      }
+      .badge.LOW {
+        background: #e4f4ec;
+        color: var(--green);
+      }
+      .badge.MONITOR {
+        background: #fbf0de;
+        color: var(--amber);
+      }
+      .badge.REFER_URGENTLY {
+        background: #fbe7e4;
+        color: var(--red);
+      }
+      .prob-bar {
+        height: 8px;
+        border-radius: 6px;
+        background: var(--line);
+        overflow: hidden;
+        margin: 10px 0 4px;
+      }
+      .prob-bar .fill {
+        height: 100%;
+        background: var(--teal-500);
+      }
+      .explain {
+        font-size: 13px;
+        color: var(--ink-soft);
+        line-height: 1.55;
+        text-align: left;
+        background: var(--mint-100);
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-top: 12px;
+      }
+      .meta {
+        font-size: 11px;
+        color: var(--ink-soft);
+        margin-top: 10px;
+      }
 
-  .disclaimer{
-    font-size:11.5px; color:var(--ink-soft); text-align:center; margin-top:18px; line-height:1.5;
-  }
-  .config{ display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--ink-soft); margin-bottom:14px;}
-  .config input{ width:190px; font-size:12px; padding:5px 7px; border-radius:6px; border:1px solid var(--line); }
-  .error{ background:#FBE7E4; color:var(--red); padding:10px 12px; border-radius:10px; font-size:13px; margin-top:12px;}
-</style>
-</head>
-<body>
-
-<header>
-  <div class="mark">NL</div>
-  <div>
-    <h1>NeoLume</h1>
-    <p>Smartphone jaundice risk screening</p>
-  </div>
-</header>
-
-<main>
-  <div class="config">
-    <span>Backend URL</span>
-    <input id="apiUrl" value="http://localhost:8000" />
-  </div>
-
-  <div class="stepper">
-    <div class="dot" data-step="1"></div>
-    <div class="dot" data-step="2"></div>
-    <div class="dot" data-step="3"></div>
-  </div>
-
-  <!-- STEP 1: capture -->
-  <section id="step-capture" class="card">
-    <h2>1. Guided capture</h2>
-    <p class="hint">Place the printed calibration card and the baby's skin (forehead, chest or sole) both in frame, in good natural light if possible. Tap capture when both guides are filled.</p>
-    <div class="video-wrap">
-      <video id="video" autoplay playsinline muted></video>
-      <div class="guide">
-        <div class="card-box"></div>
-        <div class="skin-box"></div>
+      .disclaimer {
+        font-size: 11.5px;
+        color: var(--ink-soft);
+        text-align: center;
+        margin-top: 18px;
+        line-height: 1.5;
+      }
+      .config {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12px;
+        color: var(--ink-soft);
+        margin-bottom: 14px;
+      }
+      .config input {
+        width: 190px;
+        font-size: 12px;
+        padding: 5px 7px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+      }
+      .error {
+        background: #fbe7e4;
+        color: var(--red);
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        margin-top: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="mark">NL</div>
+      <div>
+        <h1>NeoLume</h1>
+        <p>Smartphone jaundice risk screening</p>
       </div>
-    </div>
-    <div class="btn-row">
-      <button class="primary" id="captureBtn">Capture photo</button>
-      <button class="ghost" id="switchCamBtn">Flip camera</button>
-    </div>
-  </section>
+    </header>
 
-  <!-- STEP 2: crop confirm -->
-  <section id="step-crop" class="card" style="display:none;">
-    <h2>2. Confirm regions</h2>
-    <p class="hint">Drag on the photo to select the <b>calibration card</b> patch, then the <b>skin</b> region. Tap "Use whole photo" if you'd rather skip manual cropping (less accurate, but fine for a quick demo).</p>
-    <canvas id="snapCanvas" class="snapshot"></canvas>
-    <div id="cropStatus" style="font-size:12.5px;color:var(--ink-soft);margin-top:8px;">Step: drag to select the calibration card patch</div>
-    <div class="btn-row" style="margin-top:12px;">
-      <button class="ghost" id="retakeBtn">Retake</button>
-      <button class="primary" id="analyzeBtn" disabled>Analyze</button>
-    </div>
-    <button class="link" id="skipCropBtn">Use whole photo instead →</button>
-  </section>
+    <main>
+      <div class="config">
+        <span>Backend URL</span>
+        <input id="apiUrl" value="https://neolume.onrender.com" />
+      </div>
 
-  <!-- STEP 3: result -->
-  <section id="step-result" class="card" style="display:none;">
-    <h2>3. Screening result</h2>
-    <div class="result" id="resultBody"></div>
-    <div class="btn-row" style="margin-top:16px;">
-      <button class="ghost" id="newScanBtn">New scan</button>
-    </div>
-  </section>
+      <div class="stepper">
+        <div class="dot" data-step="1"></div>
+        <div class="dot" data-step="2"></div>
+        <div class="dot" data-step="3"></div>
+      </div>
 
-  <p class="disclaimer">
-    NeoLume is a <b>screening aid</b>, not a diagnostic device. A MONITOR or
-    REFER_URGENTLY result should always be confirmed with a clinical TSB blood test.
-  </p>
-</main>
+      <!-- STEP 1: capture -->
+      <section id="step-capture" class="card">
+        <h2>1. Guided capture</h2>
+        <p class="hint">
+          Place the printed calibration card and the baby's skin (forehead,
+          chest or sole) both in frame, in good natural light if possible. Tap
+          capture when both guides are filled.
+        </p>
+        <div class="video-wrap">
+          <video id="video" autoplay playsinline muted></video>
+          <div class="guide">
+            <div class="card-box"></div>
+            <div class="skin-box"></div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="primary" id="captureBtn">Capture photo</button>
+          <button class="ghost" id="switchCamBtn">Flip camera</button>
+        </div>
+      </section>
 
-<script>
-const video = document.getElementById('video');
-const captureBtn = document.getElementById('captureBtn');
-const switchCamBtn = document.getElementById('switchCamBtn');
-const snapCanvas = document.getElementById('snapCanvas');
-const cropStatus = document.getElementById('cropStatus');
-const retakeBtn = document.getElementById('retakeBtn');
-const analyzeBtn = document.getElementById('analyzeBtn');
-const skipCropBtn = document.getElementById('skipCropBtn');
-const newScanBtn = document.getElementById('newScanBtn');
-const resultBody = document.getElementById('resultBody');
-const apiUrlInput = document.getElementById('apiUrl');
+      <!-- STEP 2: crop confirm -->
+      <section id="step-crop" class="card" style="display: none">
+        <h2>2. Confirm regions</h2>
+        <p class="hint">
+          Drag on the photo to select the <b>calibration card</b> patch, then
+          the <b>skin</b> region. Tap "Use whole photo" if you'd rather skip
+          manual cropping (less accurate, but fine for a quick demo).
+        </p>
+        <canvas id="snapCanvas" class="snapshot"></canvas>
+        <div
+          id="cropStatus"
+          style="font-size: 12.5px; color: var(--ink-soft); margin-top: 8px"
+        >
+          Step: drag to select the calibration card patch
+        </div>
+        <div class="btn-row" style="margin-top: 12px">
+          <button class="ghost" id="retakeBtn">Retake</button>
+          <button class="primary" id="analyzeBtn" disabled>Analyze</button>
+        </div>
+        <button class="link" id="skipCropBtn">Use whole photo instead →</button>
+      </section>
 
-let currentStream = null;
-let facingMode = 'environment';
-let fullImageBlob = null;
-let cardRect = null, skinRect = null;
-let selectionPhase = 'card'; // 'card' -> 'skin' -> done
+      <!-- STEP 3: result -->
+      <section id="step-result" class="card" style="display: none">
+        <h2>3. Screening result</h2>
+        <div class="result" id="resultBody"></div>
+        <div class="btn-row" style="margin-top: 16px">
+          <button class="ghost" id="newScanBtn">New scan</button>
+        </div>
+      </section>
 
-function setStep(n){
-  document.querySelectorAll('.stepper .dot').forEach(d=>{
-    const s = parseInt(d.dataset.step);
-    d.classList.toggle('active', s===n);
-    d.classList.toggle('done', s<n);
-  });
-  document.getElementById('step-capture').style.display = n===1 ? 'block':'none';
-  document.getElementById('step-crop').style.display = n===2 ? 'block':'none';
-  document.getElementById('step-result').style.display = n===3 ? 'block':'none';
-}
+      <p class="disclaimer">
+        NeoLume is a <b>screening aid</b>, not a diagnostic device. A MONITOR or
+        REFER_URGENTLY result should always be confirmed with a clinical TSB
+        blood test.
+      </p>
+    </main>
 
-async function startCamera(){
-  if(currentStream){ currentStream.getTracks().forEach(t=>t.stop()); }
-  try{
-    currentStream = await navigator.mediaDevices.getUserMedia({
-      video:{ facingMode, width:{ideal:1280}, height:{ideal:1280} }, audio:false
-    });
-    video.srcObject = currentStream;
-  }catch(err){
-    cropStatus.textContent = '';
-    alert('Camera access failed: ' + err.message + '\nYou can still use the demo by uploading a photo (not implemented in this minimal build) or granting camera permission.');
-  }
-}
-startCamera();
+    <script>
+      const video = document.getElementById("video");
+      const captureBtn = document.getElementById("captureBtn");
+      const switchCamBtn = document.getElementById("switchCamBtn");
+      const snapCanvas = document.getElementById("snapCanvas");
+      const cropStatus = document.getElementById("cropStatus");
+      const retakeBtn = document.getElementById("retakeBtn");
+      const analyzeBtn = document.getElementById("analyzeBtn");
+      const skipCropBtn = document.getElementById("skipCropBtn");
+      const newScanBtn = document.getElementById("newScanBtn");
+      const resultBody = document.getElementById("resultBody");
+      const apiUrlInput = document.getElementById("apiUrl");
 
-switchCamBtn.onclick = () => { facingMode = facingMode==='environment' ? 'user' : 'environment'; startCamera(); };
+      let currentStream = null;
+      let facingMode = "environment";
+      let fullImageBlob = null;
+      let cardRect = null,
+        skinRect = null;
+      let selectionPhase = "card"; // 'card' -> 'skin' -> done
 
-captureBtn.onclick = () => {
-  const w = video.videoWidth, h = video.videoHeight;
-  snapCanvas.width = w; snapCanvas.height = h;
-  const ctx = snapCanvas.getContext('2d');
-  ctx.drawImage(video, 0, 0, w, h);
-  cardRect = null; skinRect = null; selectionPhase = 'card';
-  cropStatus.textContent = 'Step: drag to select the calibration card patch';
-  analyzeBtn.disabled = true;
-  setStep(2);
-};
+      function setStep(n) {
+        document.querySelectorAll(".stepper .dot").forEach((d) => {
+          const s = parseInt(d.dataset.step);
+          d.classList.toggle("active", s === n);
+          d.classList.toggle("done", s < n);
+        });
+        document.getElementById("step-capture").style.display =
+          n === 1 ? "block" : "none";
+        document.getElementById("step-crop").style.display =
+          n === 2 ? "block" : "none";
+        document.getElementById("step-result").style.display =
+          n === 3 ? "block" : "none";
+      }
 
-retakeBtn.onclick = () => setStep(1);
+      async function startCamera() {
+        if (currentStream) {
+          currentStream.getTracks().forEach((t) => t.stop());
+        }
+        try {
+          currentStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              facingMode,
+              width: { ideal: 1280 },
+              height: { ideal: 1280 },
+            },
+            audio: false,
+          });
+          video.srcObject = currentStream;
+        } catch (err) {
+          cropStatus.textContent = "";
+          alert(
+            "Camera access failed: " +
+              err.message +
+              "\nYou can still use the demo by uploading a photo (not implemented in this minimal build) or granting camera permission.",
+          );
+        }
+      }
+      startCamera();
 
-// --- simple drag-to-select on the snapshot canvas ---
-let dragStart = null;
-function canvasPos(e){
-  const rect = snapCanvas.getBoundingClientRect();
-  const scaleX = snapCanvas.width / rect.width;
-  const scaleY = snapCanvas.height / rect.height;
-  const cx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-  const cy = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-  return { x: cx*scaleX, y: cy*scaleY };
-}
-function redrawSnapshotWithBoxes(){
-  // nothing to redraw from source since canvas holds pixel data already;
-  // we overlay a lightweight rectangle using a temporary composite.
-}
-snapCanvas.addEventListener('pointerdown', e=>{ dragStart = canvasPos(e); });
-snapCanvas.addEventListener('pointerup', e=>{
-  if(!dragStart) return;
-  const end = canvasPos(e);
-  const rect = {
-    x: Math.min(dragStart.x, end.x), y: Math.min(dragStart.y, end.y),
-    w: Math.abs(end.x-dragStart.x), h: Math.abs(end.y-dragStart.y)
-  };
-  dragStart = null;
-  if(rect.w < 10 || rect.h < 10) return; // ignore accidental taps
+      switchCamBtn.onclick = () => {
+        facingMode = facingMode === "environment" ? "user" : "environment";
+        startCamera();
+      };
 
-  const ctx = snapCanvas.getContext('2d');
-  ctx.strokeStyle = selectionPhase==='card' ? '#FFD36E' : '#7FE0C9';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(rect.x, rect.y, rect.w, rect.h);
+      captureBtn.onclick = () => {
+        const w = video.videoWidth,
+          h = video.videoHeight;
+        snapCanvas.width = w;
+        snapCanvas.height = h;
+        const ctx = snapCanvas.getContext("2d");
+        ctx.drawImage(video, 0, 0, w, h);
+        cardRect = null;
+        skinRect = null;
+        selectionPhase = "card";
+        cropStatus.textContent =
+          "Step: drag to select the calibration card patch";
+        analyzeBtn.disabled = true;
+        setStep(2);
+      };
 
-  if(selectionPhase === 'card'){
-    cardRect = rect;
-    selectionPhase = 'skin';
-    cropStatus.textContent = 'Step: now drag to select the skin region';
-  } else if(selectionPhase === 'skin'){
-    skinRect = rect;
-    selectionPhase = 'done';
-    cropStatus.textContent = 'Both regions selected. Tap Analyze.';
-    analyzeBtn.disabled = false;
-  }
-});
+      retakeBtn.onclick = () => setStep(1);
 
-skipCropBtn.onclick = () => {
-  cardRect = null; skinRect = null;
-  cropStatus.textContent = 'Using whole photo (no manual crop).';
-  analyzeBtn.disabled = false;
-};
+      // --- simple drag-to-select on the snapshot canvas ---
+      let dragStart = null;
+      function canvasPos(e) {
+        const rect = snapCanvas.getBoundingClientRect();
+        const scaleX = snapCanvas.width / rect.width;
+        const scaleY = snapCanvas.height / rect.height;
+        const cx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        const cy = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+        return { x: cx * scaleX, y: cy * scaleY };
+      }
+      function redrawSnapshotWithBoxes() {
+        // nothing to redraw from source since canvas holds pixel data already;
+        // we overlay a lightweight rectangle using a temporary composite.
+      }
+      snapCanvas.addEventListener("pointerdown", (e) => {
+        dragStart = canvasPos(e);
+      });
+      snapCanvas.addEventListener("pointerup", (e) => {
+        if (!dragStart) return;
+        const end = canvasPos(e);
+        const rect = {
+          x: Math.min(dragStart.x, end.x),
+          y: Math.min(dragStart.y, end.y),
+          w: Math.abs(end.x - dragStart.x),
+          h: Math.abs(end.y - dragStart.y),
+        };
+        dragStart = null;
+        if (rect.w < 10 || rect.h < 10) return; // ignore accidental taps
 
-function cropToBlob(rect){
-  return new Promise(resolve=>{
-    const c = document.createElement('canvas');
-    c.width = rect.w; c.height = rect.h;
-    c.getContext('2d').drawImage(snapCanvas, rect.x, rect.y, rect.w, rect.h, 0, 0, rect.w, rect.h);
-    c.toBlob(b=>resolve(b), 'image/jpeg', 0.92);
-  });
-}
-function canvasToBlob(canvas){
-  return new Promise(resolve=> canvas.toBlob(b=>resolve(b), 'image/jpeg', 0.92));
-}
+        const ctx = snapCanvas.getContext("2d");
+        ctx.strokeStyle = selectionPhase === "card" ? "#FFD36E" : "#7FE0C9";
+        ctx.lineWidth = 4;
+        ctx.strokeRect(rect.x, rect.y, rect.w, rect.h);
 
-analyzeBtn.onclick = async () => {
-  setStep(3);
-  resultBody.innerHTML = '<p style="color:var(--ink-soft);">Analyzing…</p>';
+        if (selectionPhase === "card") {
+          cardRect = rect;
+          selectionPhase = "skin";
+          cropStatus.textContent = "Step: now drag to select the skin region";
+        } else if (selectionPhase === "skin") {
+          skinRect = rect;
+          selectionPhase = "done";
+          cropStatus.textContent = "Both regions selected. Tap Analyze.";
+          analyzeBtn.disabled = false;
+        }
+      });
 
-  const skinBlob = skinRect ? await cropToBlob(skinRect) : await canvasToBlob(snapCanvas);
-  const cardBlob = cardRect ? await cropToBlob(cardRect) : null;
+      skipCropBtn.onclick = () => {
+        cardRect = null;
+        skinRect = null;
+        cropStatus.textContent = "Using whole photo (no manual crop).";
+        analyzeBtn.disabled = false;
+      };
 
-  try{
-    const form = new FormData();
-    form.append('skin_image', skinBlob, 'skin.jpg');
-    if(cardBlob) form.append('card_image', cardBlob, 'card.jpg');
+      function cropToBlob(rect) {
+        return new Promise((resolve) => {
+          const c = document.createElement("canvas");
+          c.width = rect.w;
+          c.height = rect.h;
+          c.getContext("2d").drawImage(
+            snapCanvas,
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            0,
+            0,
+            rect.w,
+            rect.h,
+          );
+          c.toBlob((b) => resolve(b), "image/jpeg", 0.92);
+        });
+      }
+      function canvasToBlob(canvas) {
+        return new Promise((resolve) =>
+          canvas.toBlob((b) => resolve(b), "image/jpeg", 0.92),
+        );
+      }
 
-    const res = await fetch(apiUrlInput.value.replace(/\/$/,'') + '/predict', {
-      method:'POST', body: form
-    });
-    if(!res.ok) throw new Error('Server responded ' + res.status);
-    const data = await res.json();
-    renderResult(data);
-  }catch(err){
-    console.warn('Backend unreachable, using on-device fallback estimate.', err);
-    const fallback = await clientSideFallback(skinBlob);
-    renderResult(fallback, true);
-  }
-};
+      analyzeBtn.onclick = async () => {
+        setStep(3);
+        resultBody.innerHTML =
+          '<p style="color:var(--ink-soft);">Analyzing…</p>';
 
-// Lightweight client-side fallback so the app still works with no backend
-// running (e.g. flaky wifi at a rural site / offline-first demo).
-async function clientSideFallback(blob){
-  const img = await createImageBitmap(blob);
-  const c = document.createElement('canvas');
-  c.width = img.width; c.height = img.height;
-  const ctx = c.getContext('2d');
-  ctx.drawImage(img, 0, 0);
-  const { data } = ctx.getImageData(0, 0, c.width, c.height);
-  let rSum=0,gSum=0,bSum=0,n=0;
-  for(let i=0;i<data.length;i+=4){ rSum+=data[i]; gSum+=data[i+1]; bSum+=data[i+2]; n++; }
-  const r=rSum/n, g=gSum/n, b=bSum/n;
-  // crude yellow-ness proxy: high R+G relative to B
-  const yellowScore = Math.max(0, Math.min(1, ((r+g)/2 - b) / 80));
-  const tier = yellowScore < 0.35 ? 'LOW' : (yellowScore < 0.65 ? 'MONITOR' : 'REFER_URGENTLY');
-  return {
-    scan_id: 'offline-' + Math.random().toString(36).slice(2,8),
-    timestamp: new Date().toISOString(),
-    risk_probability: Math.round(yellowScore*1000)/1000,
-    risk_tier: tier,
-    explanation: `Offline on-device estimate from average RGB (R=${r.toFixed(0)}, G=${g.toFixed(0)}, B=${b.toFixed(0)}). Connect to the trained backend model for a calibrated result.`,
-    used_trained_model: false,
-    calibrated: false
-  };
-}
+        const skinBlob = skinRect
+          ? await cropToBlob(skinRect)
+          : await canvasToBlob(snapCanvas);
+        const cardBlob = cardRect ? await cropToBlob(cardRect) : null;
 
-function renderResult(data, offline=false){
-  const pct = Math.round(data.risk_probability*100);
-  resultBody.innerHTML = `
-    <div class="badge ${data.risk_tier}">${data.risk_tier.replace('_',' ')}</div>
+        try {
+          const form = new FormData();
+          form.append("skin_image", skinBlob, "skin.jpg");
+          if (cardBlob) form.append("card_image", cardBlob, "card.jpg");
+
+          const res = await fetch(
+            apiUrlInput.value.replace(/\/$/, "") + "/predict",
+            {
+              method: "POST",
+              body: form,
+            },
+          );
+          if (!res.ok) throw new Error("Server responded " + res.status);
+          const data = await res.json();
+          renderResult(data);
+        } catch (err) {
+          console.warn(
+            "Backend unreachable, using on-device fallback estimate.",
+            err,
+          );
+          const fallback = await clientSideFallback(skinBlob);
+          renderResult(fallback, true);
+        }
+      };
+
+      // Lightweight client-side fallback so the app still works with no backend
+      // running (e.g. flaky wifi at a rural site / offline-first demo).
+      async function clientSideFallback(blob) {
+        const img = await createImageBitmap(blob);
+        const c = document.createElement("canvas");
+        c.width = img.width;
+        c.height = img.height;
+        const ctx = c.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        const { data } = ctx.getImageData(0, 0, c.width, c.height);
+        let rSum = 0,
+          gSum = 0,
+          bSum = 0,
+          n = 0;
+        for (let i = 0; i < data.length; i += 4) {
+          rSum += data[i];
+          gSum += data[i + 1];
+          bSum += data[i + 2];
+          n++;
+        }
+        const r = rSum / n,
+          g = gSum / n,
+          b = bSum / n;
+        // crude yellow-ness proxy: high R+G relative to B
+        const yellowScore = Math.max(0, Math.min(1, ((r + g) / 2 - b) / 80));
+        const tier =
+          yellowScore < 0.35
+            ? "LOW"
+            : yellowScore < 0.65
+              ? "MONITOR"
+              : "REFER_URGENTLY";
+        return {
+          scan_id: "offline-" + Math.random().toString(36).slice(2, 8),
+          timestamp: new Date().toISOString(),
+          risk_probability: Math.round(yellowScore * 1000) / 1000,
+          risk_tier: tier,
+          explanation: `Offline on-device estimate from average RGB (R=${r.toFixed(0)}, G=${g.toFixed(0)}, B=${b.toFixed(0)}). Connect to the trained backend model for a calibrated result.`,
+          used_trained_model: false,
+          calibrated: false,
+        };
+      }
+
+      function renderResult(data, offline = false) {
+        const pct = Math.round(data.risk_probability * 100);
+        resultBody.innerHTML = `
+    <div class="badge ${data.risk_tier}">${data.risk_tier.replace("_", " ")}</div>
     <div class="prob-bar"><div class="fill" style="width:${pct}%;"></div></div>
     <div style="font-size:12.5px;color:var(--ink-soft);">Risk score: ${pct}%</div>
     <div class="explain">${data.explanation}</div>
     <div class="meta">
-      Scan ${data.scan_id} · ${data.calibrated ? 'calibrated' : 'not calibrated'} ·
-      ${data.used_trained_model ? 'trained model' : (offline ? 'offline fallback estimate' : 'rule-based fallback')}
+      Scan ${data.scan_id} · ${data.calibrated ? "calibrated" : "not calibrated"} ·
+      ${data.used_trained_model ? "trained model" : offline ? "offline fallback estimate" : "rule-based fallback"}
     </div>
   `;
-}
+      }
 
-newScanBtn.onclick = () => { setStep(1); };
-setStep(1);
-</script>
-</body>
+      newScanBtn.onclick = () => {
+        setStep(1);
+      };
+      setStep(1);
+    </script>
+  </body>
 </html>
