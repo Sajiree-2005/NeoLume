@@ -10,6 +10,40 @@ The system uses a smartphone camera to capture an image of a newborn's skin alon
 
 ---
 
+# 🚀 Live Deployment
+
+NeoLume is available as a live web application with a separately deployed backend API.
+
+### 🌐 Frontend
+
+**Live Application:**  
+[NeoLume](https://neo-lume.vercel.app/)
+
+Use the frontend to:
+- Access the camera
+- Capture newborn images
+- Select calibration and skin regions
+- Submit images for analysis
+- View the screening result and explanation
+
+### ⚙️ Backend API
+
+**Live API:**  
+[NeoLume Backend](https://neolume.onrender.com)
+
+**API Health Check:**  
+[https://your-backend-url.com/health](https://neolume.onrender.com/health)
+
+The backend provides:
+- Image preprocessing
+- Color calibration
+- Feature extraction
+- Machine-learning inference
+- Risk classification
+- Screening explanation
+
+---
+
 ## Table of Contents
 
 - [Overview](#overview)
